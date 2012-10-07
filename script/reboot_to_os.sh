@@ -50,5 +50,5 @@ done
 
 echo selected $SELECTED_OS
 
-/usr/sbin/grub-reboot $SELECTED_OS
+/usr/sbin/grub-reboot "$SELECTED_OS"
 /sbin/reboot
