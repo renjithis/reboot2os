@@ -1,5 +1,5 @@
 #! /bin/bash
-MENU_ENTRY_LIST=$(grep menuentry /boot/grub/grub.cfg)
+# new method sed -n '/menuentry/s/.*\(["'\''].*["'\'']\).*/\1/p' /boot/grub/grub.cfg 
 OS_LIST=$(grep menuentry /boot/grub/grub.cfg | awk 'BEGIN{FS="\""}{print $2}')
 OS_RADIO_LIST=""
 OLD_IFS=$IFS

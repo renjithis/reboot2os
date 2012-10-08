@@ -76,7 +76,12 @@ echo 80
 grub-set-default 0
 cp reboot_to_os.sh /usr/bin/
 mkdir -p /usr/share/icons/reboot_to_os
-cp reboot_to_os*.png /usr/share/icons/reboot_to_os/
+cp images/reboot_to_os*.png /usr/share/icons/reboot_to_os/
+if [ $? -ne 0 ]; then
+  ICON_LIST=$(ls reboot_to_os*.png)
+  zenity --warning --text="Unable to copy icons : $ICON_LIST"
+fi
+chmod -R a+r /usr/share/icons/reboot_to_os
 echo 90
 sleep 1
 chmod +x /usr/bin/reboot_to_os.sh
@@ -98,7 +103,7 @@ EOF
   if [ -f /usr/share/icons/reboot_to_os/reboot_to_os4.png ]; then
     ICON=/usr/share/icons/reboot_to_os/reboot_to_os4.png
   else
-    zenity --info --text="Not found"
+    zenity --info --text="Unable to set icon for Desktop shortcut"
     ICON=/usr/share/icons/oxygen/64x64/actions/system-reboot.png
   fi
 
