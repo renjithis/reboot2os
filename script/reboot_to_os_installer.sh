@@ -103,8 +103,8 @@ EOF
   if [ -f /usr/share/icons/reboot_to_os/reboot_to_os4.png ]; then
     ICON=/usr/share/icons/reboot_to_os/reboot_to_os4.png
   else
-    zenity --info --text="Unable to set icon for Desktop shortcut"
-    ICON=/usr/share/icons/oxygen/64x64/actions/system-reboot.png
+    zenity --info --text="Unable to set icon for Desktop shortcut.\nTrying to find icon containing 'reboot' in its name from /usr/share/icons/."
+    ICON=$(find /usr/share/icons/ -iname *reboot*.png -size +4k | tail -n 1)
   fi
 
   cat <<EOF > $HOME/Desktop/RebootToOS.desktop 
