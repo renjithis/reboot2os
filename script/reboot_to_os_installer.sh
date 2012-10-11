@@ -10,6 +10,15 @@ elif [ $(which kdesu) ]; then
 else
   SUDO="sudo"
 fi
+
+if [ $(which gedit) ]; then
+  TEXT_EDITOR="gedit"
+elif [ $(which kate) ]; then
+  TEXT_EDITOR="kate"
+elif [ $(which leafpad) ]; then
+  TEXT_EDITOR="leafpad"
+fi
+
 # tty -s; if [ $? -ne 0 ]; then xterm -e "$0"; exit; fi
 if [ ! "$(which zenity)" ]; then
   echo
@@ -33,27 +42,38 @@ if [ ! "$(which zenity)" ]; then
   exit 1
 fi
 
+if [ ! $TEXT_EDITOR ]; then
+  echo "Text Editor not found"
+  TEXT_EDITOR=$(zenity --entry --text="Enter a GUI Text Editor")
+fi
+
 (
   echo 10
   sleep 1
+  LOOP_COUNT=0
   while true ; do
     GRUB_DEFAULT_VALUE=$(awk -F"=" '/^GRUB_DEFAULT/ { print $2 }' /etc/default/grub)
-  #  echo $GRUB_DEFAULT_VALUE
+    echo "Current GRUB_DEFAULT = $GRUB_DEFAULT_VALUE"
     if [ $GRUB_DEFAULT_VALUE != "saved" ]; then
       zenity --question --text "Please modify the value GRUB_DEFAULT to \nGRUB_DEFAULT=saved \nin the file /etc/default/grub. \nThe file will be opened after pressing Yes. \nPress No to stop the installation."
       CONTINUE=$?
       echo $CONTINUE
+      if [ $LOOP_COUNT -gt 10 ]; then
+	#Fail the installation
+	CONTINUE=1
+      fi
       if [ $CONTINUE -eq 1 ]; then
 	SUCCESS=-1
 	zenity --error --text="Install was unsuccessful."
 	exit 1
       fi
       echo 20
-      $SUDO gedit /etc/default/grub
+      $SUDO $TEXT_EDITOR /etc/default/grub
       echo 30
     else
       break
     fi
+    LOOP_COUNT=$(expr $LOOP_COUNT + 1)
   done
   echo 50
   zenity --question --text "Attribues of /sbin/reboot AND /usr/bin/grub-editenv will be modified so that normal users would be allowed to execute them. Do you want to continue?.\nPress No to stop the installation."
