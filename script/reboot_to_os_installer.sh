@@ -62,9 +62,10 @@ fi
 	#Fail the installation
 	CONTINUE=1
       fi
-      if [ $CONTINUE -eq 1 ]; then
+      if [ $CONTINUE -ne 0 ]; then
 	SUCCESS=-1
 	zenity --error --text="Install was unsuccessful."
+	echo "Install was unsuccessful."
 	exit 1
       fi
       echo 20
