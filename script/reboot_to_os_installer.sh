@@ -30,6 +30,7 @@
 #	lack of knowledge in scripting.
 #	Feel free to contact me for any information.
 #
+#	This script installs reboot_to_os in your machine and make neccessary changes to make it work
 
 SUCCESS=0
 if [ $(which gksu) ]; then
