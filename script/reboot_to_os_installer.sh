@@ -131,7 +131,8 @@ cp reboot_to_os.sh /usr/bin/
 mkdir -p /usr/share/icons/reboot_to_os
 cp images/reboot_to_os*.png /usr/share/icons/reboot_to_os/
 if [ $? -ne 0 ]; then
-  ICON_LIST=$(ls reboot_to_os*.png)
+  echo "cp command output=$?" >&2
+  ICON_LIST=$(ls images/reboot_to_os*.png)
   zenity --warning --text="Unable to copy icons : $ICON_LIST"
 fi
 chmod -R a+r /usr/share/icons/reboot_to_os
