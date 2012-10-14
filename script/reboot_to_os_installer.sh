@@ -27,7 +27,7 @@ if [ ! "$(which zenity)" ]; then
   fi
   INSTALL_COMMAND=""
   if [ $(which apt-get) ]; then
-    INSTALL_COMMAND="$SUDO apt-get update && sudo apt-get install -q -y zenity"
+    INSTALL_COMMAND="$SUDO apt-get update && $SUDO apt-get install -q -y zenity"
   elif [ $(which yum) ]; then
     INSTALL_COMMAND="$SUDO yum install zenity"
   elif [ $(which pacman) ]; then
