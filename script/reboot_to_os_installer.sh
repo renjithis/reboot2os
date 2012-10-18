@@ -30,7 +30,7 @@
 #	lack of knowledge in scripting.
 #	Feel free to contact me for any information.
 #
-#	This script installs reboot_to_os in your machine and make neccessary changes to make it work
+#	This script installs reboot2os in your machine and make neccessary changes to make it work
 
 SUCCESS=0
 if [ $(which gksu) ]; then
@@ -118,62 +118,80 @@ fi
     exit 1
   fi
   echo 70
+  REMOVE_OLDER_VERSION=1
+  if [ -f /usr/bin/reboot_to_os.sh ]; then
+    zenity --question --text "An older version of Reboot2OS detected. Do you want to remove it and its associated files (/usr/bin/reboot_to_os.sh, /usr/share/icons/reboot_os_os) ?"
+    REMOVE_OLDER_VERSION=$?
+  fi
   TMP_SCRIPT=$(tempfile -p attr_ -s .sh)
 #   zenity --info --text=$TMP_SCRIPT
 
   cat <<EOF > $TMP_SCRIPT 
+#!/bin/bash
+echo $REMOVE_OLDER_VERSION
+if [ "$1" == "--remove-old" ]; then
+  REMOVE_OLDER_VERSION=0
+fi
 chmod u+s /sbin/reboot
 chmod u+s /usr/bin/grub-editenv
 update-grub2
 echo 80
 grub-set-default 0
-cp reboot_to_os.sh /usr/bin/
-mkdir -p /usr/share/icons/reboot_to_os
-cp images/reboot_to_os*.png /usr/share/icons/reboot_to_os/
+cp reboot2os.sh /usr/bin/
+mkdir -p /usr/share/icons/reboot2os
+cp images/reboot2os*.png /usr/share/icons/reboot2os/
 if [ $? -ne 0 ]; then
   echo "cp command output=$?" >&2
-  ICON_LIST=$(ls images/reboot_to_os*.png)
+  ICON_LIST=$(ls images/reboot2os*.png)
   zenity --warning --text="Unable to copy icons : $ICON_LIST"
 fi
-chmod -R a+r /usr/share/icons/reboot_to_os
+chmod -R a+r /usr/share/icons/reboot2os
 echo 90
 sleep 1
-chmod +x /usr/bin/reboot_to_os.sh
+chmod +x /usr/bin/reboot2os.sh
+if [ $REMOVE_OLDER_VERSION -eq 0 ]; then
+  rm -f /usr/bin/reboot_to_os.sh
+  rm -rf /usr/share/icons/reboot_to_os
+fi
 EOF
 
   chmod +x $TMP_SCRIPT
   zenity --info --text="Enter password to allow attribute setting and to allow copying"
-  $SUDO $TMP_SCRIPT
+  if [ $REMOVE_OLDER_VERSION -eq 0 ]; then
+    $SUDO "$TMP_SCRIPT --remove-old"
+  else
+    $SUDO $TMP_SCRIPT
+  fi
   rm -f $TMP_SCRIPT
 
 #   ln -s /usr/bin/reboot_to_os.sh $HOME/Desktop/RebootToOS
-  if [ -L $HOME/Desktop/RebootToOS ]; then
-    rm -f $HOME/Desktop/RebootToOS
+  if [ -L $HOME/Desktop/Reboot2OS ]; then
+    rm -f $HOME/Desktop/Reboot2OS
   fi
-  if [ -f $HOME/Desktop/RebootToOS.desktop ]; then
-    rm -f $HOME/Desktop/RebootToOS.desktop
+  if [ -f $HOME/Desktop/Reboot2OS.desktop ]; then
+    rm -f $HOME/Desktop/Reboot2OS.desktop
   fi
 
-  if [ -f /usr/share/icons/reboot_to_os/reboot_to_os4.png ]; then
-    ICON=/usr/share/icons/reboot_to_os/reboot_to_os4.png
+  if [ -f /usr/share/icons/reboot2os/reboot2os4.png ]; then
+    ICON=/usr/share/icons/reboot2os/reboot2os4.png
   else
     zenity --info --text="Unable to set icon for Desktop shortcut.\nTrying to find icon containing 'reboot' in its name from /usr/share/icons/."
     ICON=$(find /usr/share/icons/ -iname *reboot*.png -size +4k | tail -n 1)
   fi
 
-  cat <<EOF > $HOME/Desktop/RebootToOS.desktop 
+  cat <<EOF > $HOME/Desktop/Reboot2OS.desktop 
 [Desktop Entry]
-Name=RebootToOS
-Exec=reboot_to_os.sh 
+Name=Reboot2OS
+Exec=reboot2os.sh 
 Type=Application
 StartupNotify=true
 Path=
 Icon=$ICON
 EOF
-  chmod +x $HOME/Desktop/RebootToOS.desktop 
-  zenity --info --text "File /usr/bin/reboot_to_os.sh has been created and link made to Desktop. \nTo uninstall, delete /usr/bin/reboot_to_os.sh and remove the link."
+  chmod +x $HOME/Desktop/Reboot2OS.desktop 
+  zenity --info --text "File /usr/bin/reboot2os.sh has been created and link made to Desktop. \nTo uninstall, delete /usr/bin/reboot2os.sh and remove the link."
   echo 100
-) | zenity --progress --auto-close --title="Installing RebootToOS"
+) | zenity --progress --auto-close --title="Installing Reboot2OS"
 
 if [ $SUCCESS -ne 0 ]; then
   zenity --error --text="Install was unsuccessful."

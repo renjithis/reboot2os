@@ -1,24 +1,24 @@
-restart_to_os5.png
+reboot2os5.png
 Designer : Alessandro Rei - http://www.kde-look.org/usermanager/search.php?username=mentalrey
 Link : http://www.iconfinder.com/icondetails/6176/128/restart_icon
 License : GPL, http://www.iconfinder.com/browse/iconset/DarkGlass_Reworked/#readme
 
-restart_to_o4s.png
+reboot2os4.png
 Designer : Frank Souza - http://franksouza183.deviantart.com/
 Link : http://www.iconfinder.com/icondetails/79699/128/_icon?r=1
 License : Free for non commercial use, http://www.iconfinder.com/browse/iconset/fs-icons-ubuntu-by-franksouza-/#readme
 
-restart_to_os1.png
+reboot2os1.png
 Designer : Christian F. Burprich - http://chrfb.deviantart.com
 Link : http://www.iconfinder.com/icondetails/16946/128/power_restart_icon?r=1
 License : Creative Commons (Attribution-Noncommercial-Share Alike 3.0 Unported), http://www.iconfinder.com/browse/iconset/ecqlipse2/#readme
 
-restart_to_os2.png
+reboot2os2.png
 Designer : Webdesigner Depot - http://www.webdesignerdepot.com
 Link : http://www.iconfinder.com/icondetails/40719/128/blue_button_refresh_repeat_restart_update_icon
 License : Free for commercial use, http://www.iconfinder.com/browse/iconset/Primo_Icons/#readme
 
-restart_to_os3.png
+reboot2os3.png
 Designer : Everaldo Coelho - http://www.everaldo.com/
 Link : http://www.iconfinder.com/icondetails/18203/128/quick_restart_icon
 License : LGPL, http://www.iconfinder.com/browse/iconset/crystalproject/#readme

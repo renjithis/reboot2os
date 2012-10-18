@@ -1,4 +1,6 @@
 # Ignore all files ending with ~
 *~
+# Ignore all hidden files ending with .swp
+.*.swp
 # Ignore all bin directories
 bin

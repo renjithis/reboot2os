@@ -1,5 +1,5 @@
 #! /bin/bash
-BIN_PATH="bin/RebootToOS_installer.run"
+BIN_PATH="bin/Reboot2OS_installer.run"
 BUILD_PATH="script"
 INSTALL_EXECUTABLE="./reboot_to_os_installer.sh"
 GREET_MESSAGE="Reboot to other OS with GRUB-Installer"
