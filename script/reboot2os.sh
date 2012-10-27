@@ -41,6 +41,7 @@ OS_ARRAY[0]=""
 IFS="
 "
 OS_NUMBER=0
+OS_NAME_MAX_LENGTH=0
 for OS in $OS_LIST
 do
 #   echo $OS
@@ -54,7 +55,6 @@ do
   fi
 done
 IFS=$OLD_IFS;
-OS_NAME_MAX_LENGTH=0
 OS_NUMBER=0
 for OS_SPACE_REMOVED in $OS_LIST_SAPCE_REMOVED
 do
@@ -72,8 +72,14 @@ WINDOW_HEIGHT=$(expr $OS_NUMBER \* 55)
 if [ $WINDOW_HEIGHT -gt 500 ]; then
   WINDOW_HEIGHT=500
 fi
+if [ $WINDOW_HEIGHT -lt 100 ]; then
+  WINDOW_HEIGHT=500
+fi
 if [ $WINDOW_WIDTH -gt 700 ]; then
   WINDOW_WIDTH=700
+fi
+if [ $WINDOW_WIDTH -lt 300 ]; then
+  WINDOW_WIDTH=300
 fi
 echo WINDOW_HEIGHT=$WINDOW_HEIGHT WINDOW_WIDTH=$WINDOW_WIDTH
 # SELECTED_OS_SPACE_REMOVED=$(zenity --list --radiolist --column="" --column="Menu Entry" $OS_RADIO_LIST --width $WINDOW_WIDTH --height $WINDOW_HEIGHT)
