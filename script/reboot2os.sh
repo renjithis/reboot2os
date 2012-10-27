@@ -31,8 +31,9 @@
 #	Feel free to contact me for any information.
 #
 
-# new method sed -n '/menuentry/s/.*\(["'\''].*["'\'']\).*/\1/p' /boot/grub/grub.cfg 
-OS_LIST=$(grep menuentry /boot/grub/grub.cfg | awk 'BEGIN{FS="\""}{print $2}')
+# old method
+# OS_LIST=$(grep menuentry /boot/grub/grub.cfg | awk 'BEGIN{FS="\""}{print $2}')
+OS_LIST=$(sed -n '/menuentry/s/.*\(["'\''].*["'\'']\).*/\1/p' /boot/grub/grub.cfg)
 OS_RADIO_LIST=""
 OLD_IFS=$IFS
 OS_LIST_SAPCE_REMOVED=""
@@ -49,6 +50,7 @@ do
   OS_NUMBER=$(expr $OS_NUMBER + 1)
 done
 IFS=$OLD_IFS;
+OS_NAME_MAX_LENGTH=0
 OS_NUMBER=0
 for OS_SPACE_REMOVED in $OS_LIST_SAPCE_REMOVED
 do
@@ -59,13 +61,27 @@ do
     OS_RADIO_LIST="$OS_RADIO_LIST FALSE $OS_SPACE_REMOVED"
   fi
   OS_NUMBER=$(expr $OS_NUMBER + 1)
+  if [ $(expr length "$OS_SPACE_REMOVED") -gt $OS_NAME_MAX_LENGTH ]; then
+    OS_NAME_MAX_LENGTH=$(expr length "$OS_SPACE_REMOVED")
+  fi
 done
 # echo $OS_RADIO_LIST
-SELECTED_OS_SPACE_REMOVED=$(zenity --list --radiolist --column="" --column="Menu Entry" $OS_RADIO_LIST)
+WINDOW_WIDTH=$(expr $OS_NAME_MAX_LENGTH \* 10)
+WINDOW_HEIGHT=$(expr $OS_NUMBER \* 55)
+if [ $WINDOW_HEIGHT -gt 500 ]; then
+  WINDOW_HEIGHT=500
+fi
+if [ $WINDOW_WIDTH -gt 700 ]; then
+  WINDOW_WIDTH=700
+fi
+echo WINDOW_HEIGHT=$WINDOW_HEIGHT WINDOW_WIDTH=$WINDOW_WIDTH
+# SELECTED_OS_SPACE_REMOVED=$(zenity --list --radiolist --column="" --column="Menu Entry" $OS_RADIO_LIST --width $WINDOW_WIDTH --height $WINDOW_HEIGHT)
+SELECTED_OS_SPACE_REMOVED=$(zenity --list --column="Menu Entry" $OS_LIST_SAPCE_REMOVED --width $WINDOW_WIDTH --height $WINDOW_HEIGHT)
 CONTINUE=$?
 # echo $SELECTED_OS_SPACE_REMOVED
 if [ $CONTINUE -ne 0 ]; then
   echo cancelled
+  zenity --notification --window-icon="error" --text="Reboot cancelled by user" --timeout=5 &
   exit
 fi
 
@@ -75,12 +91,22 @@ for OS_SPACE_REMOVED in $OS_LIST_SAPCE_REMOVED
 do
   if [ $OS_SPACE_REMOVED = $SELECTED_OS_SPACE_REMOVED ]; then
     SELECTED_OS=${OS_ARRAY[$SELECTED_OS_NUMBER]}
-#     echo Found at $SELECTED_OS_NUMBER
+    echo Found at $SELECTED_OS_NUMBER
+    break;
   fi
   SELECTED_OS_NUMBER=$(expr $SELECTED_OS_NUMBER + 1)
 done
 
+if [ $SELECTED_OS == "" ]; then
+  echo "Unable to determine selected OS"
+  zenity --notification --window-icon="error" --text="Unable to determine selected OS. Reboot cancelled" --timeout=10 &
+fi
+
 echo selected $SELECTED_OS
+zenity --notification --text="Rebooting to $SELECTED_OS. Click here to cancel" --timeout=5
+if [ $? -eq 0 ]; then
+    zenity --notification --window-icon="error" --text="Reboot cancelled by user" --timeout=5 &
+fi
 
 /usr/sbin/grub-reboot "$SELECTED_OS"
-/sbin/reboot
+# /sbin/reboot
