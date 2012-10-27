@@ -128,7 +128,7 @@ fi
 
   cat <<EOF > $TMP_SCRIPT 
 #!/bin/bash
-echo $REMOVE_OLDER_VERSION
+# echo $REMOVE_OLDER_VERSION
 if [ "$1" == "--remove-old" ]; then
   REMOVE_OLDER_VERSION=0
 fi
