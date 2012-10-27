@@ -89,14 +89,20 @@ CONTINUE=$?
 if [ $CONTINUE -ne 0 ]; then
   echo cancelled
   zenity --notification --window-icon="error" --text="Reboot cancelled by user" --timeout=5 &
-  exit
+  exit 1
+fi
+
+if [ -z $SELECTED_OS_SPACE_REMOVED ]; then
+  echo "Unable to determine selected OS"
+  zenity --notification --window-icon="error" --text="Unable to determine selected OS. Reboot cancelled" --timeout=10 &
+  exit 1
 fi
 
 SELECTED_OS=""
 SELECTED_OS_NUMBER=0
 for OS_SPACE_REMOVED in $OS_LIST_SAPCE_REMOVED
 do
-  if [ $OS_SPACE_REMOVED = $SELECTED_OS_SPACE_REMOVED ]; then
+  if [ "$OS_SPACE_REMOVED" = "$SELECTED_OS_SPACE_REMOVED" ]; then
     SELECTED_OS=${OS_ARRAY[$SELECTED_OS_NUMBER]}
     echo Found at $SELECTED_OS_NUMBER
     break;
@@ -104,16 +110,17 @@ do
   SELECTED_OS_NUMBER=$(expr $SELECTED_OS_NUMBER + 1)
 done
 
-if [ $SELECTED_OS == "" ]; then
+if [ "$SELECTED_OS" = "" ]; then
   echo "Unable to determine selected OS"
   zenity --notification --window-icon="error" --text="Unable to determine selected OS. Reboot cancelled" --timeout=10 &
+  exit 1
 fi
 
-echo selected $SELECTED_OS
+echo selected $SELECTED_OS_NUMBER $SELECTED_OS
 zenity --notification --text="Rebooting to $SELECTED_OS. Click here to cancel" --timeout=5
 if [ $? -eq 0 ]; then
     zenity --notification --window-icon="error" --text="Reboot cancelled by user" --timeout=5 &
 fi
 
-/usr/sbin/grub-reboot "$SELECTED_OS"
+/usr/sbin/grub-reboot $SELECTED_OS_NUMBER
 /sbin/reboot
