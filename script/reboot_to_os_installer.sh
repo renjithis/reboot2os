@@ -85,11 +85,11 @@ fi
   LOOP_COUNT=0
   while true ; do
     GRUB_DEFAULT_VALUE=$(awk -F"=" '/^GRUB_DEFAULT/ { print $2 }' /etc/default/grub)
-    echo "Current GRUB_DEFAULT = $GRUB_DEFAULT_VALUE"
+    echo "# Current GRUB_DEFAULT = $GRUB_DEFAULT_VALUE"
     if [ $GRUB_DEFAULT_VALUE != "saved" ]; then
       zenity --question --text "Please modify the value GRUB_DEFAULT to \nGRUB_DEFAULT=saved \nin the file /etc/default/grub. \nThe file will be opened after pressing Yes. \nPress No to stop the installation."
       CONTINUE=$?
-      echo $CONTINUE
+#       echo $CONTINUE
       if [ $LOOP_COUNT -gt 10 ]; then
 	#Fail the installation
 	CONTINUE=1
@@ -97,7 +97,7 @@ fi
       if [ $CONTINUE -ne 0 ]; then
 	SUCCESS=-1
 	zenity --error --text="Install was unsuccessful."
-	echo "Install was unsuccessful."
+	echo "# Install was unsuccessful."
 	exit 1
       fi
       echo 20
@@ -111,7 +111,7 @@ fi
   echo 50
   zenity --question --text "Attribues of /sbin/reboot AND /usr/bin/grub-editenv will be modified so that normal users would be allowed to execute them. Do you want to continue?.\nPress No to stop the installation."
   CONTINUE=$?
-  echo $CONTINUE
+#   echo $CONTINUE
   if [ $CONTINUE -eq 1 ]; then
     SUCCESS=-1
     zenity --error --text="Install was unsuccessful."
@@ -141,7 +141,7 @@ cp reboot2os.sh /usr/bin/
 mkdir -p /usr/share/icons/reboot2os
 cp images/reboot2os*.png /usr/share/icons/reboot2os/
 if [ $? -ne 0 ]; then
-  echo "cp command output=$?" >&2
+  echo "# cp command output=$?" >&2
   ICON_LIST=$(ls images/reboot2os*.png)
   zenity --warning --text="Unable to copy icons : $ICON_LIST"
 fi
