@@ -47,7 +47,11 @@ do
   OS_SPACE_REMOVED=$(echo $OS | sed -e "s/ /_/g")
   OS_LIST_SAPCE_REMOVED="$OS_LIST_SAPCE_REMOVED $OS_SPACE_REMOVED"
   OS_ARRAY[$OS_NUMBER]=$OS
+  
   OS_NUMBER=$(expr $OS_NUMBER + 1)
+  if [ $(expr length "$OS_SPACE_REMOVED") -gt $OS_NAME_MAX_LENGTH ]; then
+    OS_NAME_MAX_LENGTH=$(expr length "$OS_SPACE_REMOVED")
+  fi
 done
 IFS=$OLD_IFS;
 OS_NAME_MAX_LENGTH=0
@@ -61,9 +65,6 @@ do
     OS_RADIO_LIST="$OS_RADIO_LIST FALSE $OS_SPACE_REMOVED"
   fi
   OS_NUMBER=$(expr $OS_NUMBER + 1)
-  if [ $(expr length "$OS_SPACE_REMOVED") -gt $OS_NAME_MAX_LENGTH ]; then
-    OS_NAME_MAX_LENGTH=$(expr length "$OS_SPACE_REMOVED")
-  fi
 done
 # echo $OS_RADIO_LIST
 WINDOW_WIDTH=$(expr $OS_NAME_MAX_LENGTH \* 10)
@@ -109,4 +110,4 @@ if [ $? -eq 0 ]; then
 fi
 
 /usr/sbin/grub-reboot "$SELECTED_OS"
-# /sbin/reboot
+/sbin/reboot
